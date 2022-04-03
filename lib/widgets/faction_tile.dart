@@ -47,7 +47,7 @@ class FactionTile extends StatelessWidget {
                 factionName,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 29,
+                    fontSize: factionName=="Hadsch Hallas"? 24 : 29,
                     color: Colors.white),
               ),
             ],
