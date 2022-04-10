@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gaia_map_random/enums.dart';
 
 class FactionTile extends StatelessWidget {
   FactionTile({this.factionName, this.playerNo, this.animation});
@@ -57,14 +56,4 @@ class FactionTile extends StatelessWidget {
     );
   }
 }
-//
-// Tween<Offset>(
-// begin: const Offset(-1, 0),
-// end: Offset(0, 0),
-// ).animate(animation)
 
-// Image.asset(
-// 'images/$factionName.png',
-// height: 85,
-// width: 85,
-// ),

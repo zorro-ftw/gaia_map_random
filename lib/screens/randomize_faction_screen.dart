@@ -4,7 +4,6 @@ import 'package:gaia_map_random/widgets/faction_tile.dart';
 import 'package:gaia_map_random/models/faction.dart';
 import 'package:flutter/services.dart';
 import 'package:gaia_map_random/widgets/custom_drawer.dart';
-import 'package:gaia_map_random/enums.dart';
 
 class RandomizeFactionScreen extends StatefulWidget {
   @override

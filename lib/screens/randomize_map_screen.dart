@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:gaia_map_random/enums.dart';
 import 'package:gaia_map_random/widgets/custom_drawer.dart';
 import '../widgets/sector_tile.dart';
@@ -121,7 +120,6 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
     setState(() {
       finalDisplay.addAll(dummyResult);
     });
-    // print(finalDisplay);
   }
 
   void randomize() {
@@ -134,10 +132,8 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
     List<int> rotations = [];
     List<SectorTile> allTiles = [];
 
-    int deneme = 0;
     var random = Random();
     while (!isSuitable) {
-      print(deneme);
       allTiles.clear();
       rotations.clear();
       randomSectorNumbers.shuffle(random);
@@ -146,11 +142,8 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
         allTiles.add(SectorTile(
             sectorNumber: randomSectorNumbers[i], rotation: rotations[i]));
       }
-      print(randomSectorNumbers);
-      print(rotations);
-      print(allTiles[0].getPlanetList());
+
       for (int k = 0; k < allTiles.length; k++) {
-        print(k);
         switch (k) {
           case 0:
           case 1:
@@ -199,12 +192,10 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
               break;
             }
         }
-        print(isSuitable);
         if (!isSuitable) {
           break;
         }
       }
-      deneme++;
     }
     for (int j = 0; j < randomSectorNumbers.length; j++) {
       if (j < 3) {
@@ -244,35 +235,25 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
           {
             dummyMain = List.from(tiles[0].getOneSidePlanets(4).reversed);
             dummyNeighbor = tiles[i + 1].getOneSidePlanets(1);
-            print('BottomLeft + $dummyMain');
-            print('BottomLeft + $dummyNeighbor');
             isOkMain = crossCheckOneSide(dummyMain, dummyNeighbor);
-            print('BottomLeft\'ten isOkMain $isOkMain çıktı');
             break;
           }
         case Side.BottomRight:
           {
             dummyMain = List.from(tiles[0].getOneSidePlanets(3).reversed);
             dummyNeighbor = tiles[i + 1].getOneSidePlanets(6);
-            print('BottomRight + $dummyMain');
-            print('BottomRight + $dummyNeighbor');
             isOkMain = crossCheckOneSide(dummyMain, dummyNeighbor);
-            print('BottomRight\'tan isOkMain $isOkMain çıktı');
             break;
           }
         case Side.Right:
           {
             dummyMain = List.from(tiles[0].getOneSidePlanets(2).reversed);
             dummyNeighbor = tiles[i + 1].getOneSidePlanets(5);
-            print('Right + $dummyMain');
-            print('Right + $dummyNeighbor');
             isOkMain = crossCheckOneSide(dummyMain, dummyNeighbor);
-            print('Right\'tan isOkMain $isOkMain çıktı');
             break;
           }
       }
       if (!isOkMain) {
-        print('if\'e girdi');
         break;
       }
     }
@@ -306,7 +287,6 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
             break;
           }
       }
-      print(isOk);
       if (!isOk) {
         break; // If current condition is not OK, break the for loop and return the result
       }

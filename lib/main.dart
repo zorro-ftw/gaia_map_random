@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gaia_map_random/screens/randomize_faction_screen.dart';
 import 'package:gaia_map_random/screens/randomize_map_screen.dart';
 
 void main() {
