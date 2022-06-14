@@ -11,3 +11,5 @@ enum Planet {
 }
 
 enum Side { BottomLeft, BottomRight, Right }
+
+enum MapConfig { HollowSide , FullSide }
