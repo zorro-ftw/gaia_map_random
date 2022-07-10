@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:gaia_map_random/enums.dart';
 import 'package:gaia_map_random/widgets/custom_drawer.dart';
 import '../widgets/sector_tile.dart';
@@ -19,12 +18,27 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
     super.initState();
   }
 
-  TransformationController controller = TransformationController();
+  List<DropdownMenuItem> playerNumberDropdown = [
+    DropdownMenuItem(
+      child: Text('1-2'),
+      value: MapConfig.HollowSide,
+    ),
+    DropdownMenuItem(
+      child: Text('3-4'),
+      value: MapConfig.FullSide,
+    )
+  ];
 
+  MapConfig mapConfig = MapConfig.FullSide;
+  MapConfig configValue = MapConfig.FullSide;
+  String fileNameMapConfig;
+
+
+  TransformationController controller = TransformationController(); // controller for interactive viewer
+
+  // tiles to display at row 1, 2 & 3
   List<Image> row1 = [];
-
   List<Image> row2 = [];
-
   List<Image> row3 = [];
 
   List<Widget> finalDisplay = [
@@ -34,10 +48,15 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
             image: AssetImage('images/wallpaper2.png'), fit: BoxFit.fill),
       ),
     ),
+
   ];
+
+
 
   @override
   Widget build(BuildContext context) {
+    fileNameMapConfig = mapConfig == MapConfig.FullSide ? '' : '-Hollow';//variable to call required hollow image files
+
     return Scaffold(
       drawerScrimColor: Colors.white.withOpacity(0.4),
       drawer: CustomDrawer(),
@@ -61,24 +80,51 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: GestureDetector(
-        onDoubleTap: _handleDoubleTap,
-        child: InteractiveViewer(
-          transformationController: controller,
-          constrained: false,
-          // boundaryMargin: EdgeInsets.all(20),
-          minScale: 1,
-          maxScale: 3,
-          clipBehavior: Clip.none,
-          child: Container(
-            constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width, maxHeight: 500),
-            child: Stack(
-                fit: StackFit.loose,
-                clipBehavior: Clip.none,
-                children: finalDisplay),
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Player Count',
+                  style: TextStyle(color: Colors.white, fontSize: 20)),
+              SizedBox(
+                width: 10,
+              ),
+              DropdownButton(items: playerNumberDropdown, value: configValue ,
+                  onChanged: (newConfigValue) {
+                setState(() {
+                  configValue = newConfigValue;
+                  mapConfig = newConfigValue;
+                  randomize();
+                  displayResults();
+                });
+                  }
+
+              ),
+            ],
           ),
-        ),
+          Expanded(
+            child: GestureDetector(
+              onDoubleTap: _handleDoubleTap,
+              child: InteractiveViewer(
+                transformationController: controller,
+                constrained: false,
+                // boundaryMargin: EdgeInsets.all(20),
+                minScale: 1,
+                maxScale: 3,
+                clipBehavior: Clip.none,
+                child: Container(
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width, maxHeight: 500),
+                  child: Stack(
+                      fit: StackFit.loose,
+                      clipBehavior: Clip.none,
+                      children: finalDisplay),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -121,7 +167,6 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
     setState(() {
       finalDisplay.addAll(dummyResult);
     });
-    // print(finalDisplay);
   }
 
   void randomize() {
@@ -134,23 +179,18 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
     List<int> rotations = [];
     List<SectorTile> allTiles = [];
 
-    int deneme = 0;
     var random = Random();
     while (!isSuitable) {
-      print(deneme);
       allTiles.clear();
       rotations.clear();
       randomSectorNumbers.shuffle(random);
       for (int i = 0; i < 10; i++) {
         rotations.add(random.nextInt(6));
         allTiles.add(SectorTile(
-            sectorNumber: randomSectorNumbers[i], rotation: rotations[i]));
+            sectorNumber: randomSectorNumbers[i], rotation: rotations[i], mapConfig: mapConfig));
       }
-      print(randomSectorNumbers);
-      print(rotations);
-      print(allTiles[0].getPlanetList());
+
       for (int k = 0; k < allTiles.length; k++) {
-        print(k);
         switch (k) {
           case 0:
           case 1:
@@ -199,32 +239,48 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
               break;
             }
         }
-        print(isSuitable);
         if (!isSuitable) {
           break;
         }
       }
-      deneme++;
     }
     for (int j = 0; j < randomSectorNumbers.length; j++) {
+
+      if(mapConfig == MapConfig.HollowSide){
+        switch(randomSectorNumbers[j] ) {
+          case 5:
+          case 6:
+          case 7:
+            {
+              fileNameMapConfig = '-Hollow';
+              break;
+            }
+          default:
+            {
+              fileNameMapConfig = '';
+            }
+        }
+      }
+
+
       if (j < 3) {
         row1.add(Image(
           image: AssetImage(
-              'images/O${randomSectorNumbers[j]}-${rotations[j] * 60}.png'),
+              'images/O${randomSectorNumbers[j]}-${rotations[j] * 60}$fileNameMapConfig.png'),
           width: 150,
           height: 150,
         ));
       } else if (j >= 3 && j < 7) {
         row2.add(Image(
           image: AssetImage(
-              'images/O${randomSectorNumbers[j]}-${rotations[j] * 60}.png'),
+              'images/O${randomSectorNumbers[j]}-${rotations[j] * 60}$fileNameMapConfig.png'),
           width: 150,
           height: 150,
         ));
       } else if (j >= 7 && j < 10) {
         row3.add(Image(
           image: AssetImage(
-              'images/O${randomSectorNumbers[j]}-${rotations[j] * 60}.png'),
+              'images/O${randomSectorNumbers[j]}-${rotations[j] * 60}$fileNameMapConfig.png'),
           width: 150,
           height: 150,
         ));
@@ -244,35 +300,25 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
           {
             dummyMain = List.from(tiles[0].getOneSidePlanets(4).reversed);
             dummyNeighbor = tiles[i + 1].getOneSidePlanets(1);
-            print('BottomLeft + $dummyMain');
-            print('BottomLeft + $dummyNeighbor');
             isOkMain = crossCheckOneSide(dummyMain, dummyNeighbor);
-            print('BottomLeft\'ten isOkMain $isOkMain çıktı');
             break;
           }
         case Side.BottomRight:
           {
             dummyMain = List.from(tiles[0].getOneSidePlanets(3).reversed);
             dummyNeighbor = tiles[i + 1].getOneSidePlanets(6);
-            print('BottomRight + $dummyMain');
-            print('BottomRight + $dummyNeighbor');
             isOkMain = crossCheckOneSide(dummyMain, dummyNeighbor);
-            print('BottomRight\'tan isOkMain $isOkMain çıktı');
             break;
           }
         case Side.Right:
           {
             dummyMain = List.from(tiles[0].getOneSidePlanets(2).reversed);
             dummyNeighbor = tiles[i + 1].getOneSidePlanets(5);
-            print('Right + $dummyMain');
-            print('Right + $dummyNeighbor');
             isOkMain = crossCheckOneSide(dummyMain, dummyNeighbor);
-            print('Right\'tan isOkMain $isOkMain çıktı');
             break;
           }
       }
       if (!isOkMain) {
-        print('if\'e girdi');
         break;
       }
     }
@@ -306,7 +352,6 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
             break;
           }
       }
-      print(isOk);
       if (!isOk) {
         break; // If current condition is not OK, break the for loop and return the result
       }
