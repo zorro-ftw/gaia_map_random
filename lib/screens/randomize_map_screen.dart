@@ -33,29 +33,21 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
   MapConfig configValue = MapConfig.FullSide;
   String fileNameMapConfig;
 
-
-  TransformationController controller = TransformationController(); // controller for interactive viewer
+  TransformationController controller =
+      TransformationController(); // controller for interactive viewer
 
   // tiles to display at row 1, 2 & 3
   List<Image> row1 = [];
   List<Image> row2 = [];
   List<Image> row3 = [];
 
-  List<Widget> finalDisplay = [
-    Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage('images/wallpaper2.png'), fit: BoxFit.fill),
-      ),
-    ),
-
-  ];
-
-
+  List<Widget> finalDisplay = [];
 
   @override
   Widget build(BuildContext context) {
-    fileNameMapConfig = mapConfig == MapConfig.FullSide ? '' : '-Hollow';//variable to call required hollow image files
+    fileNameMapConfig = mapConfig == MapConfig.FullSide
+        ? ''
+        : '-Hollow'; //variable to call required hollow image files
 
     return Scaffold(
       drawerScrimColor: Colors.white.withOpacity(0.4),
@@ -80,49 +72,63 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Player Count',
-                  style: TextStyle(color: Colors.white, fontSize: 20)),
-              SizedBox(
-                width: 10,
-              ),
-              DropdownButton(items: playerNumberDropdown, value: configValue ,
-                  onChanged: (newConfigValue) {
-                setState(() {
-                  configValue = newConfigValue;
-                  mapConfig = newConfigValue;
-                  randomize();
-                  displayResults();
-                });
-                  }
-
-              ),
-            ],
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('images/wallpaper2.png'), fit: BoxFit.fill),
+            ),
           ),
-          Expanded(
-            child: GestureDetector(
-              onDoubleTap: _handleDoubleTap,
-              child: InteractiveViewer(
-                transformationController: controller,
-                constrained: false,
-                // boundaryMargin: EdgeInsets.all(20),
-                minScale: 1,
-                maxScale: 3,
-                clipBehavior: Clip.none,
-                child: Container(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width, maxHeight: 500),
-                  child: Stack(
-                      fit: StackFit.loose,
-                      clipBehavior: Clip.none,
-                      children: finalDisplay),
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text('Player Count',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  DropdownButton(
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                      iconEnabledColor: Colors.white,
+                      dropdownColor: Color(0xFF223C5F),
+                      items: playerNumberDropdown,
+                      value: configValue,
+                      onChanged: (newConfigValue) {
+                        setState(() {
+                          configValue = newConfigValue;
+                          mapConfig = newConfigValue;
+                          randomize();
+                          displayResults();
+                        });
+                      }),
+                ],
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onDoubleTap: _handleDoubleTap,
+                  child: InteractiveViewer(
+                    transformationController: controller,
+                    constrained: false,
+                    // boundaryMargin: EdgeInsets.all(20),
+                    minScale: 1,
+                    maxScale: 3,
+                    clipBehavior: Clip.none,
+                    child: Container(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width,
+                          maxHeight: 500),
+                      child: Stack(
+                          fit: StackFit.loose,
+                          clipBehavior: Clip.none,
+                          children: finalDisplay),
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
         ],
       ),
@@ -187,7 +193,9 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
       for (int i = 0; i < 10; i++) {
         rotations.add(random.nextInt(6));
         allTiles.add(SectorTile(
-            sectorNumber: randomSectorNumbers[i], rotation: rotations[i], mapConfig: mapConfig));
+            sectorNumber: randomSectorNumbers[i],
+            rotation: rotations[i],
+            mapConfig: mapConfig));
       }
 
       for (int k = 0; k < allTiles.length; k++) {
@@ -245,9 +253,8 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
       }
     }
     for (int j = 0; j < randomSectorNumbers.length; j++) {
-
-      if(mapConfig == MapConfig.HollowSide){
-        switch(randomSectorNumbers[j] ) {
+      if (mapConfig == MapConfig.HollowSide) {
+        switch (randomSectorNumbers[j]) {
           case 5:
           case 6:
           case 7:
@@ -260,8 +267,9 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
               fileNameMapConfig = '';
             }
         }
+      } else {
+        fileNameMapConfig = '';
       }
-
 
       if (j < 3) {
         row1.add(Image(
