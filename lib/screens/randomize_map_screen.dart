@@ -104,6 +104,9 @@ class _RandomizeMapScreenState extends State<RandomizeMapScreen> {
                           displayResults();
                         });
                       }),
+                  SizedBox(
+                    width: 10,
+                  ),
                 ],
               ),
               Expanded(
